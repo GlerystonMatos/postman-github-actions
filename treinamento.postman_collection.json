@@ -1,23 +1,23 @@
 {
 	"info": {
-		"_postman_id": "60cea1a1-b0fb-4719-948f-9594b4c2b6b4",
+		"_postman_id": "fe48a267-d1ad-4517-9d46-6e2d9326019a",
 		"name": "treinamento",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "3166767"
 	},
 	"item": [
 		{
-			"name": "login",
+			"name": "HealthCheck",
 			"item": [
 				{
-					"name": "HealthCheck",
+					"name": "/HealthCheck/Check",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Your test name\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -39,9 +39,14 @@
 						}
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
 				{
-					"name": "login",
+					"name": "/Login/Authenticate",
 					"event": [
 						{
 							"listen": "test",
@@ -53,8 +58,8 @@
 									"\r",
 									"let jsonData;\r",
 									"\r",
-									"pm.test(\"JSON value check\", function () {\r",
-									"    jsonData = pm.response.json();\r",
+									"pm.test(\"Validar response\", function () {\r",
+									"    jsonData = pm.response.json();    \r",
 									"});\r",
 									"\r",
 									"pm.environment.set(\"token\", jsonData.token);"
@@ -76,13 +81,41 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/login/authenticate",
+							"raw": "{{url}}/Login/Authenticate",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"login",
-								"authenticate"
+								"Login",
+								"Authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Login/Authenticated",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Login/Authenticated",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Login",
+								"Authenticated"
 							]
 						}
 					},
@@ -91,10 +124,10 @@
 			]
 		},
 		{
-			"name": "crud",
+			"name": "Perfil",
 			"item": [
 				{
-					"name": "Listagem",
+					"name": "/Perfil",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -121,20 +154,7 @@
 					"response": []
 				},
 				{
-					"name": "Criar",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
+					"name": "/Perfil",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -170,7 +190,7 @@
 					"response": []
 				},
 				{
-					"name": "OData/Listagem",
+					"name": "/OData/Perfil",
 					"event": [
 						{
 							"listen": "test",
@@ -182,8 +202,8 @@
 									"\r",
 									"let jsonData;\r",
 									"\r",
-									"pm.test(\"Your test name\", function () {\r",
-									"    jsonData = pm.response.json();\r",
+									"pm.test(\"Validar response\", function () {\r",
+									"    jsonData = pm.response.json();    \r",
 									"});\r",
 									"\r",
 									"pm.environment.set(\"id\", jsonData.value[0].Id);"
@@ -206,7 +226,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/OData/Perfil?filter=nome eq 'teste'",
+							"raw": "{{url}}/OData/Perfil?filter=nome eq 'teste'&select=id",
 							"host": [
 								"{{url}}"
 							],
@@ -218,6 +238,10 @@
 								{
 									"key": "filter",
 									"value": "nome eq 'teste'"
+								},
+								{
+									"key": "select",
+									"value": "id"
 								}
 							]
 						}
@@ -225,7 +249,7 @@
 					"response": []
 				},
 				{
-					"name": "Atualizar",
+					"name": "/Perfil",
 					"event": [
 						{
 							"listen": "test",
@@ -254,7 +278,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"{{id}}\",\r\n    \"nome\": \"teste atualizado\"\r\n}",
+							"raw": "{\r\n    \"id\": \"{{id}}\",\r\n    \"nome\": \"teste update\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -274,7 +298,7 @@
 					"response": []
 				},
 				{
-					"name": "OData/Listagem",
+					"name": "/OData/Perfil",
 					"event": [
 						{
 							"listen": "test",
@@ -286,8 +310,8 @@
 									"\r",
 									"let jsonData;\r",
 									"\r",
-									"pm.test(\"Your test name\", function () {\r",
-									"    jsonData = pm.response.json();\r",
+									"pm.test(\"Validar response\", function () {\r",
+									"    jsonData = pm.response.json();    \r",
 									"});\r",
 									"\r",
 									"pm.environment.set(\"id\", jsonData.value[0].Id);"
@@ -310,7 +334,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/OData/Perfil?filter=nome eq 'teste atualizado'",
+							"raw": "{{url}}/OData/Perfil?filter=nome eq 'teste update'&select=id",
 							"host": [
 								"{{url}}"
 							],
@@ -321,7 +345,11 @@
 							"query": [
 								{
 									"key": "filter",
-									"value": "nome eq 'teste atualizado'"
+									"value": "nome eq 'teste update'"
+								},
+								{
+									"key": "select",
+									"value": "id"
 								}
 							]
 						}
@@ -329,7 +357,20 @@
 					"response": []
 				},
 				{
-					"name": "Excluir",
+					"name": "/Perfil",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
